@@ -314,7 +314,7 @@ export default class InputForm extends React.Component{
                    color="primary"
                    className="full-width"
                    onClick={this.handleDownload}
-                   >Download PDF
+                   >Submit & Download PDF
                    </Button>
                 </Col>
             </Form>
