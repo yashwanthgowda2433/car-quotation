@@ -13,7 +13,8 @@ module.exports = function(app) {
 
  
 
-  app.post("/api/car/add", controller.add);
+  app.post("/api/car/add", controller.exceladd);
+
   
 
 

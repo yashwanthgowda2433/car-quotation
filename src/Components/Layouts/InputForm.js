@@ -23,7 +23,7 @@ export default class InputForm extends React.Component{
         puchaseprice: 19700,
         downpayment: 1000,
         tradeinvalue: 500,
-        interestrate: 0.30,
+        interestrate: 0.03,
         lengthofloan: 1,
         monthlypayment: 0,
         totalcost : 0,
@@ -59,19 +59,19 @@ export default class InputForm extends React.Component{
           if(name === "lengthofloan"){
             B6=value
           }
-          const amount = (B2-(B3+B4))
-          var principal = parseFloat(amount);
-          var interest = parseFloat(B5) / 100 / 12;
-          var payments = parseFloat(B6) * 12;
+        //   const amount = (B2-(B3+B4))
+        //   var principal = parseFloat(amount);
+        //   var interest = parseFloat(B5) / 100 / 12;
+        //   var payments = parseFloat(B6) * 12;
   
-          // compute the monthly payment figure
-          var x = Math.pow(1 + interest, payments); //Math.pow computes powers
-          var monthly = (principal*x*interest)/(x-1);
-          if (!isNaN(monthly) && (monthly !== Number.POSITIVE_INFINITY) && (monthly !== Number.NEGATIVE_INFINITY)) {
-            this.setState({monthlypayment:monthly.toFixed(2)})
-            this.setState({totalcost:(monthly * payments).toFixed(2)})
+        //   // compute the monthly payment figure
+        //   var x = Math.pow(1 + interest, payments); //Math.pow computes powers
+        //   var monthly = (principal*x*interest)/(x-1);
+        //   if (!isNaN(monthly) && (monthly !== Number.POSITIVE_INFINITY) && (monthly !== Number.NEGATIVE_INFINITY)) {
+        //     this.setState({monthlypayment:monthly.toFixed(2)})
+        //     this.setState({totalcost:(monthly * payments).toFixed(2)})
 
-          }
+        //   }
         //   var mp = (((B2-(B3+B4))/B6)+(((B2-(B3+B4))*(B5))/B6))
         //   var mp = ((B2-(B3+B4))*(B5/12))/(1 - ((1 + (B5/12))^(-1 * B6 * 12)))
 
@@ -87,9 +87,9 @@ export default class InputForm extends React.Component{
     //   };
 
     handleDownload = () => {
-        console.log(this.state);
+        // console.log(this.state);
 
-        axios.post("http://localhost:8082/api/car/add", {
+        axios.post('http://localhost:8082/api/car/add', {
             puchaseprice: this.state.puchaseprice,
             downpayment: this.state.downpayment,
             tradeinvalue: this.state.tradeinvalue,
@@ -97,7 +97,19 @@ export default class InputForm extends React.Component{
             lengthofloan: this.state.lengthofloan,
             monthlypayment: this.state.monthlypayment,
             totalcost: this.state.totalcost,
-        });
+        })
+            .then((res) => {
+                console.log(res.data)
+                this.setState({monthlypayment:res.data.total.monthly.toFixed(2)})
+                this.setState({totalcost:res.data.total.total.toFixed(2)})
+
+            }).catch((error) => {
+                console.log(error)
+            });
+
+       
+
+        
         
         const content = `
         <table style="width:20%;border:1px solid black;font-size:18px;">
@@ -177,7 +189,7 @@ export default class InputForm extends React.Component{
     render(){
     
         return (
-        <Container onClick={this.calculate}>
+        <Container>
             <Form style={{marginTop:"40px"}} ref={this.state.selectorRef}>
                 <Form.Group as={Row} controlId="formPurchasePrice">
                     <Form.Label column sm="2">Purchase Price</Form.Label>
