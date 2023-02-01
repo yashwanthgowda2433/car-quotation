@@ -31,6 +31,26 @@ export default class InputForm extends React.Component{
 
     }
 
+    componentDidMount() {
+        // call api or anything
+        console.log(error)
+        axios.post('http://localhost:8082/api/car/get', {})
+            .then((res) => {
+                console.log(res.data)
+                this.setState({puchaseprice:res.data.total.puchaseprice})
+                this.setState({downpayment:res.data.total.downpayment})
+                this.setState({tradeinvalue:res.data.total.tradeinvalue})
+                this.setState({interestrate:res.data.total.interestrate})
+                this.setState({lengthofloan:res.data.total.lengthofloan})
+
+                this.setState({monthlypayment:res.data.total.monthly})
+                this.setState({totalcost:res.data.total.total})
+
+            }).catch((error) => {
+                console.log(error)
+            });
+      }
+
     changeHandler = event => {
         const name = event.target.name;
         const value = event.target.value;
@@ -187,7 +207,7 @@ export default class InputForm extends React.Component{
     }
 
     render(){
-    
+        
         return (
         <Container>
             <Form style={{marginTop:"40px"}} ref={this.state.selectorRef}>
@@ -267,7 +287,7 @@ export default class InputForm extends React.Component{
                     <Form.Label column sm="2">Length of Loan</Form.Label>
                     <Col sm="10">
                         <InputGroup>
-                            <InputGroup.Text id="basic-addon1">years</InputGroup.Text>
+                            <InputGroup.Text id="basic-addon1">months</InputGroup.Text>
                             <Form.Control
                                 name="lengthofloan"
                                 type="number"
