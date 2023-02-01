@@ -14,6 +14,7 @@ module.exports = function(app) {
  
 
   app.post("/api/car/add", controller.exceladd);
+  app.post("/api/car/get", controller.excelget);
 
   
 

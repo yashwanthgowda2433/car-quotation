@@ -56,11 +56,18 @@ exports.exceladd = async (req, res) => {
     worksheet.getCell('B5').value  = parseFloat(req.body.interestrate); // B5's value set
     
     worksheet.getCell('B6').value  = req.body.lengthofloan; // B6's value set
-    // console.log(getCellResult(worksheet, 'B8'));
-    return {monthly : getCellResult(worksheet, 'B8'), total : getCellResult(worksheet, 'B9')};
+    console.log(worksheet.getCell('B9').value);
+    var month = getCellResult(worksheet, 'B8');
+    var tot = getCellResult(worksheet, 'B9');
+
+    worksheet.getCell('B8').value  = { formula: 'PMT(B5/12,B6,B2-(B3+B4))', result: getCellResult(worksheet, 'B8') };
+    worksheet.getCell('B9').value  = { formula: '-(B8*B6)+(B3+B4)', result: getCellResult(worksheet, 'B9') };
+
+    
+    return {monthly : month, total : tot};
   
   });
-  // await workbook.xlsx.writeFile(__dirname+'/calculate.xlsx');                            
+  await workbook.xlsx.writeFile(__dirname+'/calculate.xlsx');                            
 
   // return true;
   // console.log(workval.monthly)
@@ -83,6 +90,39 @@ exports.exceladd = async (req, res) => {
   } catch (error) {
      res.status(200).send({ status: error.message });
   }
+
+};
+
+exports.excelget = async (req, res) => {
+  // console.log(__dirname)
+
+  var workbook = new Excel.Workbook();
+  var workval = await workbook.xlsx.readFile(__dirname+'/calculate.xlsx').then(function() {
+    var worksheet = workbook.getWorksheet(1);
+ 
+    var B2 = worksheet.getCell('B2').value; // B2's value set
+
+    var B3 = worksheet.getCell('B3').value; // B3's value set
+
+    var B4 = worksheet.getCell('B4').value; // B4's value set
+
+    var B5 = worksheet.getCell('B5').value; // B5's value set
+    
+    var B6 = worksheet.getCell('B6').value; // B6's value set
+    
+    var B8 = worksheet.getCell('B8').value.result;
+    var B9 = worksheet.getCell('B9').value.result;
+
+    
+    return {puchaseprice: B2, downpayment: B3, tradeinvalue: B4, interestrate: B5, lengthofloan: B6, monthly : B8, total : B9};
+  
+  });
+
+  // return true;
+  // console.log(workval.monthly)
+  res.status(200).send({ status: "success", total:workval });
+    
+  
 
 };
 

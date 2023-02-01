@@ -33,7 +33,6 @@ export default class InputForm extends React.Component{
 
     componentDidMount() {
         // call api or anything
-        console.log(error)
         axios.post('http://localhost:8082/api/car/get', {})
             .then((res) => {
                 console.log(res.data)
